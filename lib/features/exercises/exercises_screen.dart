@@ -137,7 +137,13 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
   }
 
   Widget _buildTypeFilter() {
-    final types = ['Tous', 'QCM', 'Compléter', 'Corriger', 'Prédire', 'Écrire'];
+    // Généré depuis les types réellement présents : aucun exercice n'est caché.
+    final present = ExerciseData.allExercises.map((e) => e.type).toSet();
+    final types = [
+      'Tous',
+      for (final t in ExerciseType.values)
+        if (present.contains(t)) _typeDisplayName(t),
+    ];
     return Container(
       height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 16),

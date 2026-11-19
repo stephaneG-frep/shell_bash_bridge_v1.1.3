@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme.dart';
 import '../../services/progress_service.dart';
+import '../projects/projects_screen.dart';
 import '../../data/challenges.dart';
 import '../../models/challenge.dart';
 
@@ -88,6 +89,15 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
               ),
             ),
           ),
+          TextButton.icon(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ProjectsScreen()),
+            ),
+            icon: const Icon(Icons.build_circle_outlined, size: 16),
+            label: Text('Projets', style: AppFonts.firaCode(fontSize: 12, fontWeight: FontWeight.w600)),
+            style: TextButton.styleFrom(foregroundColor: AppTheme.accent),
+          ),
+          const SizedBox(width: 6),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
@@ -424,7 +434,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
           ),
           const SizedBox(width: 3),
           Text(
-            '\$points pts',
+            '$points pts',
             style: AppFonts.firaCode(
               fontSize: 9,
               fontWeight: FontWeight.w600,

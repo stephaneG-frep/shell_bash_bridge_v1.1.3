@@ -1,19 +1,30 @@
 import '../../core/app_fonts.dart';
 import 'package:flutter/material.dart';
 
+import '../../data/bash_courses.dart';
+import '../../data/powershell_courses.dart';
 import '../../models/note.dart';
 import '../../services/storage_service.dart';
 import '../../core/theme.dart';
 
 class NotesScreen extends StatefulWidget {
-  const NotesScreen({super.key});
+  /// Si renseigné : n'affiche que les notes de cette leçon et y rattache les nouvelles.
+  final String? lessonId;
+  final String? lessonTitle;
+  const NotesScreen({super.key, this.lessonId, this.lessonTitle});
 
   @override
   State<NotesScreen> createState() => _NotesScreenState();
 }
 
 class _NotesScreenState extends State<NotesScreen> {
-  List<Note> _notes = [];
+  List<Note> _allNotes = []; // toutes les notes (base des enregistrements)
+  List<Note> _notes = []; // notes affichées (éventuellement filtrées par leçon)
+
+  static final Map<String, String> _lessonTitles = {
+    for (final c in [...BashCourseData.allCourses, ...PowerShellCourseData.allCourses])
+      for (final l in c.lessons) l.id: l.title,
+  };
   bool _isEditing = false;
   Note? _editingNote;
   final _titleController = TextEditingController();
@@ -23,6 +34,8 @@ class _NotesScreenState extends State<NotesScreen> {
   void initState() {
     super.initState();
     _loadNotes();
+    // Depuis une leçon sans note : ouvrir directement l'éditeur.
+    if (widget.lessonId != null && _notes.isEmpty) _createNewNote();
   }
 
   @override
@@ -34,13 +47,16 @@ class _NotesScreenState extends State<NotesScreen> {
 
   void _loadNotes() {
     setState(() {
-      _notes = StorageService.loadNotes();
+      _allNotes = StorageService.loadNotes();
+      _notes = widget.lessonId == null
+          ? List.of(_allNotes)
+          : _allNotes.where((n) => n.lessonId == widget.lessonId).toList();
       _notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
     });
   }
 
   void _createNewNote() {
-    _titleController.clear();
+    _titleController.text = widget.lessonTitle ?? '';
     _contentController.clear();
     setState(() {
       _isEditing = true;
@@ -77,7 +93,7 @@ class _NotesScreenState extends State<NotesScreen> {
     }
 
     final now = DateTime.now();
-    final notes = List<Note>.from(_notes);
+    final notes = List<Note>.from(_allNotes);
 
     if (_editingNote != null) {
       final index = notes.indexWhere((n) => n.id == _editingNote!.id);
@@ -96,6 +112,7 @@ class _NotesScreenState extends State<NotesScreen> {
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         title: title.isEmpty ? 'Sans titre' : title,
         content: content,
+        lessonId: widget.lessonId ?? '',
         createdAt: now,
         updatedAt: now,
       ));
@@ -178,7 +195,7 @@ class _NotesScreenState extends State<NotesScreen> {
     );
 
     if (confirmed == true) {
-      final notes = List<Note>.from(_notes);
+      final notes = List<Note>.from(_allNotes);
       notes.removeWhere((n) => n.id == note.id);
       await StorageService.saveNotes(notes);
       _loadNotes();
@@ -231,7 +248,9 @@ class _NotesScreenState extends State<NotesScreen> {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Mes Notes',
+              widget.lessonTitle != null ? 'Notes : ${widget.lessonTitle}' : 'Mes Notes',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: AppFonts.firaCode(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -377,6 +396,23 @@ class _NotesScreenState extends State<NotesScreen> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+                  if (widget.lessonId == null && _lessonTitles[note.lessonId] != null) ...[
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(Icons.menu_book_rounded, size: 11, color: AppTheme.accent.withValues(alpha: 0.7)),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            _lessonTitles[note.lessonId]!,
+                            style: AppFonts.firaCode(fontSize: 10, color: AppTheme.accent.withValues(alpha: 0.8)),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: 6),
                   Text(
                     dateStr,

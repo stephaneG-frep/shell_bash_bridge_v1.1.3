@@ -1,5 +1,10 @@
 import '../../core/app_fonts.dart';
 import 'package:flutter/material.dart';
+import '../../data/bash_courses.dart';
+import '../../data/powershell_courses.dart';
+import '../../models/lesson.dart';
+import '../courses/courses_screen.dart';
+import '../lessons/lesson_detail_screen.dart';
 
 import '../../services/search_service.dart';
 import '../../core/theme.dart';
@@ -338,21 +343,29 @@ class _SearchScreenState extends State<SearchScreen> {
     return AppTheme.accent;
   }
 
+  Lesson? _findLesson(String id) {
+    for (final c in [...BashCourseData.allCourses, ...PowerShellCourseData.allCourses]) {
+      for (final l in c.lessons) {
+        if (l.id == id) return l;
+      }
+    }
+    return null;
+  }
+
   void _navigateToResult(SearchResult result) {
     switch (result.type) {
-      case 'Cours':
       case 'Leçon':
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Ouvrez l\'onglet Cours pour consulter "${result.title}"',
-              style: AppFonts.firaCode(fontSize: 11),
-            ),
-            backgroundColor: AppTheme.bashGreen,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+        final lesson = _findLesson(result.id);
+        if (lesson != null) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => LessonDetailScreen(lesson: lesson)),
+          );
+        }
+        break;
+      case 'Cours':
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => CoursesScreen(initialTab: result.shell == 'PowerShell' ? 1 : 0),
           ),
         );
         break;

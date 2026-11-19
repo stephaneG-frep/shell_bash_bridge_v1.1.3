@@ -4,6 +4,7 @@ import '../../models/lesson.dart';
 import '../../services/progress_service.dart';
 import '../../shared/widgets/terminal_container.dart';
 import '../../shared/widgets/shell_badge.dart';
+import '../notes/notes_screen.dart';
 
 class LessonDetailScreen extends StatefulWidget {
   final Lesson lesson;
@@ -39,6 +40,13 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
         actions: [
           ShellBadge(shell: lesson.shell),
           const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.note_add_outlined),
+            tooltip: 'Mes notes sur cette leçon',
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => NotesScreen(lessonId: lesson.id, lessonTitle: lesson.title),
+            )),
+          ),
           IconButton(
             icon: Icon(_isFavorite ? Icons.favorite : Icons.favorite_border, color: _isFavorite ? Colors.red : null),
             onPressed: () {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme.dart';
 import '../../data/comparisons.dart';
 import '../../models/comparison.dart';
+import '../../services/progress_service.dart';
 
 class ComparisonScreen extends StatefulWidget {
   const ComparisonScreen({super.key});
@@ -295,6 +296,8 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
                     ),
                     const SizedBox(width: 8),
                     _buildCategoryBadge(categoryLabel),
+                    const SizedBox(width: 8),
+                    _buildFavoriteButton(comparison),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -306,6 +309,35 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
           ),
           if (isExpanded) _buildDifferencesSection(comparison),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFavoriteButton(Comparison comparison) {
+    final isFav = ProgressService.isFavorite(comparison.id);
+    return Semantics(
+      button: true,
+      label: isFav ? 'Retirer des favoris' : 'Ajouter aux favoris',
+      child: GestureDetector(
+        onTap: () async {
+          await ProgressService.toggleFavorite(comparison.id);
+          if (mounted) setState(() {});
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: isFav
+                ? AppTheme.danger.withValues(alpha: 0.15)
+                : AppTheme.textSecColor(context).withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+            size: 16,
+            color: isFav ? AppTheme.danger : AppTheme.textSecColor(context).withValues(alpha: 0.4),
+          ),
+        ),
       ),
     );
   }
@@ -390,7 +422,7 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: '\$prefix ',
+                  text: '$prefix ',
                   style: AppFonts.firaCode(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,

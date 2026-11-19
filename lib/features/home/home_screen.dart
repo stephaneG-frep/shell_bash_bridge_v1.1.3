@@ -10,6 +10,7 @@ import '../cheatsheets/cheatsheet_screen.dart';
 import '../search/search_screen.dart';
 import '../guide/guide_screen.dart';
 import '../exercises/exercises_screen.dart';
+import '../projects/projects_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -250,6 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _actionChip('Cheat Sheets', Icons.description, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CheatSheetScreen()))),
             _actionChip('Recherche', Icons.search, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen()))),
             _actionChip('Exercices', Icons.quiz, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ExercisesScreen()))),
+            _actionChip('Projets', Icons.build_circle_outlined, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProjectsScreen()))),
             _actionChip('Guide', Icons.help_outline, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GuideScreen()))),
           ],
         ),
