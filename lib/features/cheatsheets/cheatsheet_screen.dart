@@ -7,20 +7,8 @@ import '../../models/cheat_sheet.dart';
 import '../../services/progress_service.dart';
 
 class CheatSheetScreen extends StatefulWidget {
-  const CheatSheetScreen({super.key});
-
-  @override
-  State<CheatSheetScreen> createState() => _CheatSheetScreenState();
-}
-
-class _CheatSheetScreenState extends State<CheatSheetScreen> {
-  final _searchController = TextEditingController();
-  String _searchQuery = '';
-  String _selectedCategory = 'Tous';
-  String _selectedShell = 'Tous';
-  String _selectedDanger = 'Tous';
-
-  static const _categories = [
+  /// Catégories proposées en filtre (toute fiche doit en utiliser une).
+  static const categories = [
     'Tous',
     'Navigation',
     'Fichiers',
@@ -44,8 +32,26 @@ class _CheatSheetScreenState extends State<CheatSheetScreen> {
     'Administration',
   ];
 
+  /// Niveaux de danger reconnus (couleur et filtre).
+  static const dangerLevels = ['SAFE', 'WARNING', 'SENSITIVE', 'DESTRUCTIVE'];
+
+  const CheatSheetScreen({super.key});
+
+  @override
+  State<CheatSheetScreen> createState() => _CheatSheetScreenState();
+}
+
+class _CheatSheetScreenState extends State<CheatSheetScreen> {
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+  String _selectedCategory = 'Tous';
+  String _selectedShell = 'Tous';
+  String _selectedDanger = 'Tous';
+
+  static const _categories = CheatSheetScreen.categories;
+
   static const _shellFilters = ['Tous', 'Bash', 'PowerShell'];
-  static const _dangerFilters = ['Tous', 'SAFE', 'WARNING', 'SENSITIVE', 'DESTRUCTIVE'];
+  static const _dangerFilters = ['Tous', ...CheatSheetScreen.dangerLevels];
 
   List<CheatSheet> get _filteredSheets {
     return CheatSheetData.allSheets.where((s) {

@@ -8,11 +8,12 @@ Version : **1.1.3**
 
 ## Fonctionnalités
 
-- **Cours** Bash (59 leçons) et PowerShell (52 leçons) : syntaxe, exemples commentés, erreurs fréquentes, cas pratiques
+- **Cours** Bash (8 cours, 67 leçons) et PowerShell (9 cours, 60 leçons), répartis sur 8 niveaux, de Découverte à Expert, dont un niveau Automatisation (JSON, CSV, sauvegardes, jobs, Git…). Chaque leçon comprend une explication, des exemples commentés, un cas pratique, l'erreur fréquente, la bonne pratique et un exercice corrigé.
+- **Navigation par cours** : liste des leçons avec progression, reprise à la première leçon non terminée, boutons Précédente / Suivante
 - **Comparateur** Bash ↔ PowerShell pour les tâches courantes
-- **Exercices** (QCM, compléter, corriger, prédire, écrire une commande) avec validation immédiate
+- **48 exercices** (QCM, compléter, corriger, prédire, écrire une commande, script) avec validation immédiate
 - **Défis** et **projets** classés par difficulté, avec indices et solutions
-- **Fiches mémo** (cheat sheets) et **recherche** globale
+- **62 fiches mémo** (cheat sheets) et **recherche** globale
 - **Lab** : terminal Bash et PowerShell simulé, avec missions guidées
 - **Progression**, badges, favoris et notes personnelles, sauvegardés sur l'appareil
 - **Thème clair / sombre / système** et taille de texte réglable
@@ -63,7 +64,11 @@ flutter run
 flutter test
 ```
 
-Les tests couvrent le stockage (données corrompues), la progression et les badges, ainsi que le simulateur du Lab.
+Les tests couvrent le stockage (données corrompues), la progression et les badges, le simulateur du Lab, les notes, la navigation entre leçons et l'intégrité du contenu pédagogique (identifiants uniques, champs remplis, catégories reconnues).
+
+## Ajouter une leçon
+
+Ajoutez une entrée `Lesson(...)` dans `lib/data/bash_courses.dart` ou `lib/data/powershell_courses.dart`, avec un identifiant unique commençant par `bash_` ou `ps_` et tous les champs remplis. La progression, la recherche, les badges et la navigation se mettent à jour automatiquement. Lancez `flutter test` : `test/content_test.dart` signale tout oubli.
 
 ---
 
