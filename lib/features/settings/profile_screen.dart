@@ -1,7 +1,9 @@
 import '../../core/app_fonts.dart';
 import 'package:flutter/material.dart';
+import '../../shared/widgets/tappable.dart';
 
 import '../../app/app.dart';
+import '../../core/app_settings.dart';
 import '../../core/constants.dart';
 import '../../core/theme.dart';
 import '../../services/storage_service.dart';
@@ -56,6 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _setCodeSize(double size) async {
     await StorageService.setCodeSize(size);
+    codeSizeNotifier.value = size;
     setState(() => _codeSize = size);
   }
 
@@ -159,6 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (confirmed == true) {
       // Ne réinitialise QUE le Lab (avant : clearAll() effaçait toutes les données).
+      await StorageService.clearLabState();
       labResetNotifier.value++;
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -328,7 +332,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildLinkCard(_NavLink link) {
-    return GestureDetector(
+    return Tappable(
       onTap: () => _navigateTo(link.destination),
       child: Container(
         padding: const EdgeInsets.all(14),
@@ -401,7 +405,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           final color = isSelected ? AppTheme.accent : AppTheme.textColor(context);
 
           return Expanded(
-            child: GestureDetector(
+            child: Tappable(
+              selected: isSelected,
               onTap: () => _setThemeMode(value),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
@@ -632,7 +637,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required Color color,
     required VoidCallback onPressed,
   }) {
-    return GestureDetector(
+    return Tappable(
       onTap: onPressed,
       child: Container(
         padding: const EdgeInsets.all(14),

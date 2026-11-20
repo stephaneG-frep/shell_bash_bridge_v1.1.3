@@ -1,5 +1,6 @@
 import '../../core/app_fonts.dart';
 import 'package:flutter/material.dart';
+import '../../shared/widgets/tappable.dart';
 
 import '../../core/theme.dart';
 import '../../services/progress_service.dart';
@@ -65,7 +66,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       padding: const EdgeInsets.fromLTRB(12, 16, 20, 0),
       child: Row(
         children: [
-          IconButton(
+          IconButton(tooltip: 'Retour', 
             icon: const Icon(Icons.arrow_back_rounded),
             onPressed: () => Navigator.of(context).pop(),
           ),
@@ -121,7 +122,8 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
           final shell = _shellFilters[index];
           final isSelected = _selectedShell == shell;
           final color = _shellChipColor(shell);
-          return GestureDetector(
+          return Tappable(
+            selected: isSelected,
             onTap: () => setState(() => _selectedShell = shell),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
@@ -211,7 +213,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
+          Tappable(
             onTap: () {
               setState(() {
                 if (isExpanded) {
@@ -426,7 +428,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
+          Tappable(
             onTap: () {
               setState(() {
                 if (isVisible) {

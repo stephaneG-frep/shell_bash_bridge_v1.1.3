@@ -8,15 +8,17 @@ Version : **1.1.3**
 
 ## Fonctionnalités
 
-- **Cours** Bash (8 cours, 67 leçons) et PowerShell (9 cours, 60 leçons), répartis sur 8 niveaux, de Découverte à Expert, dont un niveau Automatisation (JSON, CSV, sauvegardes, jobs, Git…). Chaque leçon comprend une explication, des exemples commentés, un cas pratique, l'erreur fréquente, la bonne pratique et un exercice corrigé.
+- **Cours** Bash (8 cours, 71 leçons) et PowerShell (9 cours, 64 leçons), répartis sur 8 niveaux, de Découverte à Expert, dont un niveau Automatisation (JSON, CSV, sauvegardes, jobs, Git…). Chaque leçon comprend une explication, des exemples commentés, un cas pratique, l'erreur fréquente, la bonne pratique et un exercice corrigé.
 - **Navigation par cours** : liste des leçons avec progression, reprise à la première leçon non terminée, boutons Précédente / Suivante
 - **Comparateur** Bash ↔ PowerShell pour les tâches courantes
 - **48 exercices** (QCM, compléter, corriger, prédire, écrire une commande, script) avec validation immédiate
 - **Défis** et **projets** classés par difficulté, avec indices et solutions
 - **62 fiches mémo** (cheat sheets) et **recherche** globale
-- **Lab** : terminal Bash et PowerShell simulé, avec missions guidées
+- **Lab** : terminal Bash et PowerShell simulé, avec missions guidées ; fichiers, dossier courant et missions sont conservés d'une session à l'autre
 - **Progression**, badges, favoris et notes personnelles, sauvegardés sur l'appareil
-- **Thème clair / sombre / système** et taille de texte réglable
+- **Thème clair / sombre / système**, taille du texte et taille du code réglables
+- **Accessibilité** : boutons et filtres annoncés par les lecteurs d'écran (TalkBack)
+- **Guide** affiché automatiquement au premier lancement
 
 ---
 
@@ -115,7 +117,7 @@ Le Lab simule un système de fichiers en mémoire. **Aucune commande n'est réel
 - **Bash** : `pwd`, `ls [-l] [-a]`, `cd` (`..`, `~`, `-`, chemins relatifs ou absolus), `mkdir [-p]`, `rmdir`, `touch`, `cp [-r]`, `mv`, `rm [-r] [-f]`, `cat`, `echo`, `clear`, `help`. Les options combinées (`-rf`, `-la`), les guillemets et les redirections `>` / `>>` sont gérés. Comme le vrai Bash, le simulateur distingue les majuscules des minuscules.
 - **PowerShell** : `Get-Location`, `Get-ChildItem`, `Set-Location`, `New-Item`, `mkdir`, `Copy-Item [-Recurse]`, `Move-Item`, `Remove-Item [-Recurse]`, `Get-Content`, `Write-Output`, `Clear-Host`, `Get-Help`, ainsi que leurs alias courants (`ls`, `cd`, `cp`, `rm`, `cat`…). Les noms de paramètres abrégés sont acceptés. Comme le vrai PowerShell, le simulateur ne distingue pas les majuscules des minuscules.
 
-Les missions sont validées d'après le résultat obtenu, c'est-à-dire l'état du système de fichiers, et non d'après le texte exact tapé.
+Les missions sont validées d'après le résultat obtenu, c'est-à-dire l'état du système de fichiers, et non d'après le texte exact tapé. L'état du Lab est sauvegardé après chaque commande et restauré au lancement suivant ; « Réinitialiser le Lab » (onglet Missions ou Profil) repart de zéro.
 
 ---
 
@@ -141,7 +143,6 @@ Les missions sont validées d'après le résultat obtenu, c'est-à-dire l'état 
 - Pas d'exécution réelle de commandes : le Lab est une simulation (pas de pipes, de variables ni de scripts)
 - Pas de synchronisation cloud de la progression
 - Interface en français uniquement
-- L'état du Lab n'est pas sauvegardé entre deux sessions
 
 ---
 

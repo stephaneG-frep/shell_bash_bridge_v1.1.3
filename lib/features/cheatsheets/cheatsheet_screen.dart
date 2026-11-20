@@ -1,5 +1,6 @@
 import '../../core/app_fonts.dart';
 import 'package:flutter/material.dart';
+import '../../shared/widgets/tappable.dart';
 
 import '../../data/cheat_sheets.dart';
 import '../../core/theme.dart';
@@ -104,7 +105,7 @@ class _CheatSheetScreenState extends State<CheatSheetScreen> {
       padding: const EdgeInsets.fromLTRB(12, 16, 20, 0),
       child: Row(
         children: [
-          IconButton(
+          IconButton(tooltip: 'Retour', 
             icon: const Icon(Icons.arrow_back_rounded),
             onPressed: () => Navigator.of(context).pop(),
           ),
@@ -160,7 +161,7 @@ class _CheatSheetScreenState extends State<CheatSheetScreen> {
             size: 20,
           ),
           suffixIcon: _searchQuery.isNotEmpty
-              ? IconButton(
+              ? IconButton(tooltip: 'Effacer la recherche', 
                   icon: const Icon(Icons.clear_rounded, size: 18),
                   color: AppTheme.textSecColor(context).withValues(alpha: 0.5),
                   onPressed: () {
@@ -196,7 +197,8 @@ class _CheatSheetScreenState extends State<CheatSheetScreen> {
           final shell = _shellFilters[index];
           final isSelected = _selectedShell == shell;
           final color = _shellChipColor(shell);
-          return GestureDetector(
+          return Tappable(
+            selected: isSelected,
             onTap: () => setState(() => _selectedShell = shell),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
@@ -241,7 +243,8 @@ class _CheatSheetScreenState extends State<CheatSheetScreen> {
           final danger = _dangerFilters[index];
           final isSelected = _selectedDanger == danger;
           final color = _dangerChipColor(danger);
-          return GestureDetector(
+          return Tappable(
+            selected: isSelected,
             onTap: () => setState(() => _selectedDanger = danger),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
@@ -285,7 +288,8 @@ class _CheatSheetScreenState extends State<CheatSheetScreen> {
         itemBuilder: (context, index) {
           final cat = _categories[index];
           final isSelected = _selectedCategory == cat;
-          return GestureDetector(
+          return Tappable(
+            selected: isSelected,
             onTap: () => setState(() => _selectedCategory = cat),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
@@ -504,7 +508,8 @@ class _CheatSheetScreenState extends State<CheatSheetScreen> {
 
   Widget _buildFavoriteButton(CheatSheet sheet) {
     final isFav = ProgressService.isFavorite(sheet.id);
-    return GestureDetector(
+    return Tappable(
+      label: isFav ? 'Retirer des favoris' : 'Ajouter aux favoris',
       onTap: () async {
         await ProgressService.toggleFavorite(sheet.id);
         setState(() {});

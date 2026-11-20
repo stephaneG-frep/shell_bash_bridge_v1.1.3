@@ -1,5 +1,6 @@
 import '../../core/app_fonts.dart';
 import 'package:flutter/material.dart';
+import '../../core/app_settings.dart';
 import '../../core/theme.dart';
 
 class TerminalContainer extends StatelessWidget {
@@ -18,14 +19,17 @@ class TerminalContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: isBash ? AppTheme.bashGreen.withValues(alpha: 0.3) : AppTheme.psBlue.withValues(alpha: 0.3)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (prompt != null)
-            Text(prompt!, style: AppFonts.firaCode(color: isBash ? AppTheme.bashGreen : AppTheme.psBlue, fontSize: 12)),
-          const SizedBox(height: 4),
-          Text(text, style: AppFonts.firaCode(color: AppTheme.terminalText, fontSize: 13)),
-        ],
+      child: ValueListenableBuilder<double>(
+        valueListenable: codeSizeNotifier,
+        builder: (context, size, _) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (prompt != null)
+              Text(prompt!, style: AppFonts.firaCode(color: isBash ? AppTheme.bashGreen : AppTheme.psBlue, fontSize: size - 1)),
+            const SizedBox(height: 4),
+            SelectableText(text, style: AppFonts.firaCode(color: AppTheme.terminalText, fontSize: size)),
+          ],
+        ),
       ),
     );
   }

@@ -76,7 +76,7 @@ class _CoursesScreenState extends State<CoursesScreen>
             ),
           ),
           const Spacer(),
-          IconButton(
+          IconButton(tooltip: 'Exercices', 
             icon: Icon(Icons.quiz, color: AppTheme.accent),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) => const ExercisesScreen()));

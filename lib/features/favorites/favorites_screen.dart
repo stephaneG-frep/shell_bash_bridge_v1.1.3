@@ -1,5 +1,6 @@
 import '../../core/app_fonts.dart';
 import 'package:flutter/material.dart';
+import '../../shared/widgets/tappable.dart';
 
 import '../../services/progress_service.dart';
 import '../../data/bash_courses.dart';
@@ -121,7 +122,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget _buildLessonNotFound(String title) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
+        leading: IconButton(tooltip: 'Retour', 
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -172,7 +173,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Row(
         children: [
-          IconButton(
+          IconButton(tooltip: 'Retour', 
             icon: const Icon(Icons.arrow_back_rounded, size: 22),
             color: AppTheme.textSecColor(context).withValues(alpha: 0.7),
             onPressed: () => Navigator.of(context).pop(),
@@ -281,7 +282,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             ? AppTheme.psBlue
             : AppTheme.accent;
 
-    return GestureDetector(
+    return Tappable(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => item.destinationBuilder()),
@@ -379,7 +380,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 ],
               ),
             ),
-            IconButton(
+            IconButton(tooltip: 'Retirer des favoris', 
               icon: const Icon(Icons.favorite_rounded, size: 20),
               color: AppTheme.danger,
               onPressed: () => _removeFavorite(item.id),

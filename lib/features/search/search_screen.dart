@@ -1,5 +1,6 @@
 import '../../core/app_fonts.dart';
 import 'package:flutter/material.dart';
+import '../../shared/widgets/tappable.dart';
 import '../../data/bash_courses.dart';
 import '../../data/powershell_courses.dart';
 import '../../models/lesson.dart';
@@ -63,7 +64,7 @@ class _SearchScreenState extends State<SearchScreen> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Row(
         children: [
-          IconButton(
+          IconButton(tooltip: 'Retour', 
             icon: const Icon(Icons.arrow_back_rounded, size: 22),
             color: AppTheme.textSecColor(context).withValues(alpha: 0.7),
             onPressed: () => Navigator.of(context).pop(),
@@ -125,7 +126,7 @@ class _SearchScreenState extends State<SearchScreen> {
             size: 20,
           ),
           suffixIcon: _searchController.text.isNotEmpty
-              ? IconButton(
+              ? IconButton(tooltip: 'Effacer la recherche', 
                   icon: const Icon(Icons.clear_rounded, size: 18),
                   color: AppTheme.textSecColor(context).withValues(alpha: 0.5),
                   onPressed: () {
@@ -226,7 +227,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildResultCard(SearchResult result) {
-    return GestureDetector(
+    return Tappable(
       onTap: () => _navigateToResult(result),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),

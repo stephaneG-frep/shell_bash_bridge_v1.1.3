@@ -148,6 +148,46 @@ class VirtualFileSystem {
     lastSucceeded = false;
   }
 
+  // ----- Sauvegarde -------------------------------------------------------
+
+  static Object _nodeToJson(VNode n) => n is VFile
+      ? {'f': n.content}
+      : {'d': {for (final e in (n as VDir).children.entries) e.key: _nodeToJson(e.value)}};
+
+  static VNode _nodeFromJson(Object? j) {
+    if (j is Map && j['f'] is String) return VFile(j['f'] as String);
+    if (j is Map && j['d'] is Map) {
+      final dir = VDir();
+      (j['d'] as Map).forEach((k, v) => dir.children[k.toString()] = _nodeFromJson(v));
+      return dir;
+    }
+    throw const FormatException('nœud invalide');
+  }
+
+  Map<String, dynamic> toJson() => {
+        'root': _nodeToJson(root),
+        'cwd': currentPath,
+        'prev': _previousPath,
+      };
+
+  /// Restaure un état sauvegardé. Renvoie false (et garde l'état initial) s'il est invalide.
+  bool restore(Map<String, dynamic> json) {
+    try {
+      final r = _nodeFromJson(json['root']);
+      if (r is! VDir) return false;
+      List<String> path(Object? v) => (v as List).map((e) => e.toString()).toList();
+      final cwd = path(json['cwd']);
+      final prev = json['prev'] == null ? [...home] : path(json['prev']);
+      root = r;
+      currentPath = nodeAt(cwd) is VDir ? cwd : [...home];
+      _previousPath = nodeAt(prev) is VDir ? prev : [...home];
+      return true;
+    } catch (_) {
+      reset();
+      return false;
+    }
+  }
+
   // ----- Chemins ---------------------------------------------------------
 
   String get currentPathString => bashDisplay(currentPath);
@@ -1139,6 +1179,27 @@ class LabEngine {
       if (_currentMissionIndex >= missions.length - 1) return;
       _currentMissionIndex++;
     }
+  }
+
+  Map<String, dynamic> toJson() => {
+        'fs': fileSystem.toJson(),
+        'done': [for (final m in missions) if (m.isCompleted) m.id],
+        'index': _currentMissionIndex,
+      };
+
+  /// Restaure missions et système de fichiers. Renvoie false si l'état est invalide.
+  bool restore(Map<String, dynamic> json) {
+    if (json['fs'] is! Map<String, dynamic> || !fileSystem.restore(json['fs'] as Map<String, dynamic>)) {
+      return false;
+    }
+    final done = (json['done'] is List) ? (json['done'] as List).whereType<int>().toSet() : <int>{};
+    for (final m in missions) {
+      m.isCompleted = done.contains(m.id);
+    }
+    final index = json['index'];
+    _currentMissionIndex = index is int ? index.clamp(0, missions.length - 1) : 0;
+    _justCompletedMission = null;
+    return true;
   }
 
   void resetAll() {

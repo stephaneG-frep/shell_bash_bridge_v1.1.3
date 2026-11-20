@@ -1,5 +1,6 @@
 import '../../core/app_fonts.dart';
 import 'package:flutter/material.dart';
+import '../../shared/widgets/tappable.dart';
 
 import '../../data/bash_courses.dart';
 import '../../data/powershell_courses.dart';
@@ -238,7 +239,7 @@ class _NotesScreenState extends State<NotesScreen> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Row(
         children: [
-          IconButton(
+          IconButton(tooltip: 'Retour', 
             icon: const Icon(Icons.arrow_back_rounded, size: 22),
             color: AppTheme.textSecColor(context).withValues(alpha: 0.7),
             onPressed: () => Navigator.of(context).pop(),
@@ -343,7 +344,7 @@ class _NotesScreenState extends State<NotesScreen> {
     final dateStr =
         '${note.updatedAt.day.toString().padLeft(2, '0')}/${note.updatedAt.month.toString().padLeft(2, '0')}/${note.updatedAt.year}';
 
-    return GestureDetector(
+    return Tappable(
       onTap: () => _editNote(note),
       child: Container(
         padding: const EdgeInsets.all(14),
@@ -424,7 +425,7 @@ class _NotesScreenState extends State<NotesScreen> {
                 ],
               ),
             ),
-            IconButton(
+            IconButton(tooltip: 'Supprimer la note', 
               icon: const Icon(Icons.delete_outline_rounded, size: 18),
               color: AppTheme.danger.withValues(alpha: 0.6),
               onPressed: () => _deleteNote(note),
@@ -445,7 +446,7 @@ class _NotesScreenState extends State<NotesScreen> {
           color: AppTheme.cardBg(context),
           child: Row(
             children: [
-              IconButton(
+              IconButton(tooltip: 'Retour', 
                 icon: const Icon(Icons.arrow_back_rounded, size: 22),
                 color: AppTheme.textSecColor(context).withValues(alpha: 0.7),
                 onPressed: _cancelEdit,

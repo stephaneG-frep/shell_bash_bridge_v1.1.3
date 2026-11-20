@@ -74,7 +74,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
     return Scaffold(
       backgroundColor: AppTheme.scaffoldBg(context),
       appBar: AppBar(
-        leading: IconButton(
+        leading: IconButton(tooltip: 'Retour', 
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.of(context).pop(),
         ),

@@ -1,5 +1,6 @@
 import '../../core/app_fonts.dart';
 import 'package:flutter/material.dart';
+import '../../shared/widgets/tappable.dart';
 
 import '../../core/theme.dart';
 import '../../data/comparisons.dart';
@@ -94,7 +95,7 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
       padding: const EdgeInsets.fromLTRB(12, 16, 20, 0),
       child: Row(
         children: [
-          IconButton(
+          IconButton(tooltip: 'Retour', 
             icon: const Icon(Icons.arrow_back_rounded),
             onPressed: () => Navigator.of(context).pop(),
           ),
@@ -150,7 +151,7 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
             size: 20,
           ),
           suffixIcon: _searchQuery.isNotEmpty
-              ? IconButton(
+              ? IconButton(tooltip: 'Effacer la recherche', 
                   icon: const Icon(Icons.clear_rounded, size: 18),
                   color: AppTheme.textSecColor(context).withValues(alpha: 0.5),
                   onPressed: () {
@@ -185,7 +186,8 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
         itemBuilder: (context, index) {
           final cat = _categories[index];
           final isSelected = _selectedCategory == cat;
-          return GestureDetector(
+          return Tappable(
+            selected: isSelected,
             onTap: () => setState(() => _selectedCategory = cat),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
@@ -318,7 +320,7 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
     return Semantics(
       button: true,
       label: isFav ? 'Retirer des favoris' : 'Ajouter aux favoris',
-      child: GestureDetector(
+      child: Tappable(
         onTap: () async {
           await ProgressService.toggleFavorite(comparison.id);
           if (mounted) setState(() {});
@@ -445,7 +447,7 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
   }
 
   Widget _buildDifferencesToggle(Comparison comparison, bool isExpanded) {
-    return GestureDetector(
+    return Tappable(
       onTap: () {
         setState(() {
           if (isExpanded) {

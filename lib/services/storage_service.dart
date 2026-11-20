@@ -12,6 +12,7 @@ class StorageService {
   static const String _textSizeKey = 'text_size';
   static const String _codeSizeKey = 'code_size';
   static const String _guideSeenKey = 'guide_seen';
+  static const String _labKey = 'lab_state';
 
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -97,6 +98,26 @@ class StorageService {
 
   static bool isGuideSeen() {
     return _prefs.getBool(_guideSeenKey) ?? false;
+  }
+
+  static Future<void> saveLabState(Map<String, dynamic> state) async {
+    await _prefs.setString(_labKey, jsonEncode(state));
+  }
+
+  static Map<String, dynamic>? loadLabState() {
+    final data = _prefs.getString(_labKey);
+    if (data == null) return null;
+    try {
+      final decoded = jsonDecode(data);
+      if (decoded is Map<String, dynamic>) return decoded;
+    } catch (e) {
+      debugPrint('StorageService: état du Lab illisible, ignoré ($e)');
+    }
+    return null;
+  }
+
+  static Future<void> clearLabState() async {
+    await _prefs.remove(_labKey);
   }
 
   static Future<void> clearAll() async {

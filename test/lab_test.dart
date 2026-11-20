@@ -149,4 +149,28 @@ void main() {
       expect(engine.completedMissions, 2);
     });
   });
+
+  group('Sauvegarde du Lab', () {
+    test('missions, fichiers et dossier courant survivent à un redémarrage', () {
+      final engine = LabEngine();
+      engine.processBashCommand('mkdir projects');
+      engine.processBashCommand('cd projects');
+      engine.processBashCommand('echo "contenu" > note.txt');
+
+      final copie = LabEngine();
+      expect(copie.restore(engine.toJson()), isTrue);
+      expect(copie.completedMissions, 2);
+      expect(copie.currentMission!.id, 3);
+      expect(copie.fileSystem.currentPathString, '/home/student/projects');
+      expect(copie.processBashCommand('cat note.txt'), 'contenu');
+    });
+
+    test('un état corrompu est ignoré sans planter', () {
+      final engine = LabEngine();
+      expect(engine.restore({'fs': {'root': 'n\'importe quoi'}}), isFalse);
+      expect(engine.restore({}), isFalse);
+      expect(engine.fileSystem.currentPathString, '/home/student');
+      expect(engine.completedMissions, 0);
+    });
+  });
 }

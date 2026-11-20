@@ -1,5 +1,6 @@
 import '../../core/app_fonts.dart';
 import 'package:flutter/material.dart';
+import '../../shared/widgets/tappable.dart';
 
 import '../../core/theme.dart';
 
@@ -332,7 +333,7 @@ class _GuideScreenState extends State<GuideScreen> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Row(
         children: [
-          IconButton(
+          IconButton(tooltip: 'Retour', 
             icon: const Icon(Icons.arrow_back_rounded, size: 22),
             color: AppTheme.textSecColor(context).withValues(alpha: 0.7),
             onPressed: () => Navigator.of(context).pop(),
@@ -497,7 +498,7 @@ class _GuideScreenState extends State<GuideScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
+          Tappable(
             onTap: () {
               setState(() {
                 if (isExpanded) {

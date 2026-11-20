@@ -122,7 +122,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Row(
         children: [
-          IconButton(
+          IconButton(tooltip: 'Retour', 
             icon: const Icon(Icons.arrow_back_rounded, size: 22),
             color: AppTheme.textSecColor(context).withValues(alpha: 0.7),
             onPressed: () => Navigator.of(context).pop(),

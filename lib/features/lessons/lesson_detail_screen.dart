@@ -66,7 +66,7 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
+        leading: IconButton(tooltip: 'Retour', 
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -90,7 +90,7 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
               builder: (_) => NotesScreen(lessonId: lesson.id, lessonTitle: lesson.title),
             )),
           ),
-          IconButton(
+          IconButton(tooltip: _isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris', 
             icon: Icon(_isFavorite ? Icons.favorite : Icons.favorite_border, color: _isFavorite ? Colors.red : null),
             onPressed: () {
               setState(() => _isFavorite = !_isFavorite);

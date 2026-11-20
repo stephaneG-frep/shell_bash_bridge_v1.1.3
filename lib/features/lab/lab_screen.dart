@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../core/app_settings.dart';
+import '../../services/storage_service.dart';
 import 'lab_missions.dart';
 
 /// Incrémenté pour demander la réinitialisation du Lab depuis un autre écran
@@ -30,6 +32,9 @@ class _LabScreenState extends State<LabScreen> with SingleTickerProviderStateMix
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     labResetNotifier.addListener(_onExternalReset);
+    codeSizeNotifier.addListener(_onCodeSizeChanged);
+    final saved = StorageService.loadLabState();
+    final restored = saved != null && _engine.restore(saved);
     final welcome = _TerminalLine(
       text: 'Bienvenue dans le Shell Lab !\nTapez "help" pour voir les commandes disponibles.\n',
       isSystem: true,
@@ -39,11 +44,21 @@ class _LabScreenState extends State<LabScreen> with SingleTickerProviderStateMix
       text: 'Bienvenue dans le PowerShell Lab !\nTapez "help" pour voir les commandes disponibles.\n',
       isSystem: true,
     ));
+    if (restored) {
+      final info = _TerminalLine(
+        text: 'Session restaurée : dossier ${_engine.fileSystem.currentPathString}, '
+            'missions ${_engine.completedMissions}/${_engine.totalMissions}.',
+        isSystem: true,
+      );
+      _bashLines.add(info);
+      _psLines.add(info);
+    }
   }
 
   @override
   void dispose() {
     labResetNotifier.removeListener(_onExternalReset);
+    codeSizeNotifier.removeListener(_onCodeSizeChanged);
     _tabController.dispose();
     _bashInput.dispose();
     _psInput.dispose();
@@ -52,11 +67,18 @@ class _LabScreenState extends State<LabScreen> with SingleTickerProviderStateMix
     super.dispose();
   }
 
+  void _onCodeSizeChanged() {
+    if (mounted) setState(() {});
+  }
+
+  void _save() => StorageService.saveLabState(_engine.toJson());
+
   void _onExternalReset() {
     if (mounted) _resetLab();
   }
 
   void _resetLab() {
+    StorageService.clearLabState();
     setState(() {
       _engine.resetAll();
       _bashLines.clear();
@@ -111,6 +133,7 @@ class _LabScreenState extends State<LabScreen> with SingleTickerProviderStateMix
         _engine.clearJustCompleted();
       }
     });
+    _save();
 
     _currentInput.clear();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -152,7 +175,7 @@ class _LabScreenState extends State<LabScreen> with SingleTickerProviderStateMix
   Widget _buildTerminalTab(BuildContext context, {required bool isBash}) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final prompt = isBash ? 'student@bash-lab:~\$ ' : 'PS C:\\ShellLab> ';
+    final prompt = isBash ? _engine.bashPrompt : _engine.psPrompt;
     final lines = isBash ? _bashLines : _psLines;
     final input = isBash ? _bashInput : _psInput;
     final scroll = isBash ? _bashScroll : _psScroll;
@@ -211,11 +234,12 @@ class _LabScreenState extends State<LabScreen> with SingleTickerProviderStateMix
                   padding: const EdgeInsets.symmetric(vertical: 1),
                   child: Text(
                     line.text,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'monospace',
-                      fontSize: 13,
+                      fontSize: codeSizeNotifier.value,
                       height: 1.4,
-                    ).copyWith(color: textColor),
+                      color: textColor,
+                    ),
                   ),
                 );
               },
@@ -229,19 +253,19 @@ class _LabScreenState extends State<LabScreen> with SingleTickerProviderStateMix
             children: [
               Text(
                 prompt,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'monospace',
-                  fontSize: 13,
-                  color: Color(0xFF4EC9B0),
+                  fontSize: codeSizeNotifier.value,
+                  color: const Color(0xFF4EC9B0),
                 ),
               ),
               Expanded(
                 child: TextField(
                   controller: input,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'monospace',
-                    fontSize: 13,
-                    color: Color(0xFFD4D4D4),
+                    fontSize: codeSizeNotifier.value,
+                    color: const Color(0xFFD4D4D4),
                   ),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
@@ -250,9 +274,15 @@ class _LabScreenState extends State<LabScreen> with SingleTickerProviderStateMix
                   ),
                   cursorColor: const Color(0xFFD4D4D4),
                   onSubmitted: _executeCommand,
+                  // Garde le clavier ouvert après Entrée, comme dans un vrai terminal.
+                  onEditingComplete: () {},
+                  textInputAction: TextInputAction.send,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  textCapitalization: TextCapitalization.none,
                 ),
               ),
-              IconButton(
+              IconButton(tooltip: 'Exécuter la commande', 
                 icon: const Icon(Icons.send, size: 18),
                 color: const Color(0xFF4EC9B0),
                 onPressed: () => _executeCommand(_currentInput.text),

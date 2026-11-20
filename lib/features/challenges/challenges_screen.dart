@@ -1,5 +1,6 @@
 import '../../core/app_fonts.dart';
 import 'package:flutter/material.dart';
+import '../../shared/widgets/tappable.dart';
 
 import '../../core/theme.dart';
 import '../../services/progress_service.dart';
@@ -20,11 +21,27 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
   final Set<String> _expandedCards = {};
   final Set<String> _showSolution = {};
   final Set<String> _showHints = {};
-  // Initialisé depuis la progression sauvegardée pour survivre aux changements d'écran.
-  late final Set<String> _completedChallenges = ProgressService.progress.completedChallenges.entries
+  // Lu directement dans la progression : reste juste après une réinitialisation.
+  Set<String> get _completedChallenges => ProgressService.progress.completedChallenges.entries
       .where((e) => e.value)
       .map((e) => e.key)
       .toSet();
+
+  @override
+  void initState() {
+    super.initState();
+    ProgressService.notifier.addListener(_onProgressChanged);
+  }
+
+  @override
+  void dispose() {
+    ProgressService.notifier.removeListener(_onProgressChanged);
+    super.dispose();
+  }
+
+  void _onProgressChanged() {
+    if (mounted) setState(() {});
+  }
 
   static const _shellFilters = ['Tous', 'Bash', 'PowerShell', 'Les deux'];
   static const _difficultyFilters = [
@@ -140,7 +157,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
           final shell = _shellFilters[index];
           final isSelected = _selectedShell == shell;
           final color = _shellChipColor(shell);
-          return GestureDetector(
+          return Tappable(
+            selected: isSelected,
             onTap: () => setState(() => _selectedShell = shell),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
@@ -185,7 +203,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
           final diff = _difficultyFilters[index];
           final isSelected = _selectedDifficulty == diff;
           final color = _difficultyColor(diff);
-          return GestureDetector(
+          return Tappable(
+            selected: isSelected,
             onTap: () => setState(() => _selectedDifficulty = diff),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
@@ -327,7 +346,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: GestureDetector(
+                      child: Tappable(
                         onTap: () {
                           setState(() {
                             if (isExpanded) {
@@ -478,7 +497,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
+          Tappable(
             onTap: () {
               setState(() {
                 if (isVisible) {
@@ -570,7 +589,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
+          Tappable(
             onTap: () {
               if (isVisible) {
                 setState(() => _showSolution.remove(challenge.id));
@@ -740,9 +759,6 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         onPressed: isCompleted
             ? null
             : () {
-                setState(() {
-                  _completedChallenges.add(challenge.id);
-                });
                 ProgressService.completeChallenge(challenge.id);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
