@@ -21,9 +21,10 @@ class _GuideScreenState extends State<GuideScreen> {
       content:
           'Shell-Bash-Bridge est une application éducative conçue pour vous aider à '
           'maîtriser les deux shells principaux : Bash (Linux/macOS) et PowerShell (Windows). '
-          'Que vous soyez débutant ou avancé, cette app vous offre des cours structurés, '
-          'un laboratoire simulé, des comparaisons side-by-side, des cheat sheets complètes, '
-          'des défis, des projets et un suivi de progression détaillé.\n\n'
+          'Que vous soyez débutant ou avancé, cette app vous offre 135 leçons réparties en cours '
+          'sur 8 niveaux, un laboratoire simulé, des comparaisons côte à côte, des cheat sheets, '
+          'des exercices, des défis, des projets et un suivi de progression détaillé.\n\n'
+          'Tout fonctionne hors ligne et vos données restent sur votre appareil.\n\n'
           'Objectif : devenir à l\'aise avec les deux shells et savoir naviguer '
           'efficacement entre les deux environnements.',
     ),
@@ -33,29 +34,34 @@ class _GuideScreenState extends State<GuideScreen> {
       content:
           'L\'écran d\'accueil est votre tableau de bord principal. Il affiche :\n\n'
           '• Votre progression globale (Bash et PowerShell)\n'
-          '• Les cours Bash et PowerShell avec leur progression respective\n'
+          '• Les parcours Bash et PowerShell, qui ouvrent directement le bon onglet des cours\n'
           '• Le comparateur Bash ↔ PowerShell\n'
-          '• Vos statistiques : cours terminés, exercices réussis, défis relevés, badges obtenus\n'
-          '• La reprise rapide du dernier cours consulté\n'
-          '• Les actions rapides vers Cheat Sheets, Recherche, Comparateur et Guide\n\n'
-          'Tirez vers le bas pour rafraîchir les données.',
+          '• Vos statistiques : leçons terminées, exercices réussis, défis relevés, badges obtenus\n'
+          '• Les actions rapides vers Cheat Sheets, Recherche, Exercices, Projets et Guide\n\n'
+          'Les statistiques se mettent à jour automatiquement dès que vous progressez.',
     ),
     _GuideSection(
       title: 'Cours',
       icon: Icons.menu_book_rounded,
       content:
-          'Les cours sont organisés par shell (Bash / PowerShell) et par niveau :\n\n'
-          '• Niveau 0 : Introduction et concepts de base\n'
-          '• Niveau 1 : Navigation et manipulation de fichiers\n'
-          '• Niveau 2 : Texte, redirection et pipes\n'
-          '• Niveau 3 : Recherche et expression régulière\n'
-          '• Niveau 4 : Processus et services\n'
-          '• Niveau 5 : Réseau et SSH\n'
-          '• Niveau 6 : Scripts avancés et automatisation\n'
-          '• Niveau 7 : Administration système\n\n'
-          'Chaque cours contient des leçons détaillées avec objectifs, explications, '
-          'syntaxe, exemples, cas pratiques, erreurs fréquentes et bonnes pratiques. '
-          'Marquez une leçon comme terminée pour faire avancer votre progression.',
+          'Les cours sont organisés par shell (onglets Bash et PowerShell) et par niveau :\n\n'
+          '• Découverte : premiers pas dans le terminal\n'
+          '• Fondamentaux : commandes du quotidien, pipeline\n'
+          '• Intermédiaire : pipes, redirections, recherche, formats de données\n'
+          '• Scripting : variables, conditions, boucles, fonctions\n'
+          '• Administration : utilisateurs, processus, services, réseau, archives\n'
+          '• Automatisation : JSON, CSV, sauvegardes planifiées, jobs, Git\n'
+          '• Avancé : débogage, parallélisme, fonctions avancées\n'
+          '• Expert : performance, tests, sécurité, DevOps\n\n'
+          'Touchez un cours pour voir la liste de ses leçons, avec une coche sur celles '
+          'que vous avez terminées. Le bouton « Reprendre » vous mène directement à la '
+          'première leçon non terminée.\n\n'
+          'Chaque leçon contient l\'objectif, l\'explication, la syntaxe, un exemple commenté '
+          'ligne par ligne, un cas pratique, l\'erreur fréquente, la bonne pratique et un '
+          'exercice avec indice et correction. En bas de la leçon :\n'
+          '• « Terminer et continuer » valide la leçon et ouvre la suivante\n'
+          '• « Précédente » et « Suivante » permettent de naviguer dans le cours\n'
+          '• L\'icône note, en haut, ouvre vos notes sur cette leçon',
     ),
     _GuideSection(
       title: 'Navigation',
@@ -66,20 +72,24 @@ class _GuideScreenState extends State<GuideScreen> {
           '• Cours : bibliothèque de cours Bash et PowerShell\n'
           '• Lab : terminal simulé pour pratiquer les commandes\n'
           '• Défis : défis techniques à résoudre\n'
-          '• Profil : paramètres et notes personnelles\n\n'
-          'Vous pouvez revenir à l\'accueil à tout moment en appuyant sur l\'onglet Accueil.',
+          '• Profil : paramètres, progression, favoris et notes\n\n'
+          'Chaque onglet garde son état quand vous en changez : vous retrouvez le Lab, '
+          'vos filtres et votre position là où vous les aviez laissés.',
     ),
     _GuideSection(
       title: 'Exercices',
       icon: Icons.fitness_center_rounded,
       content:
-          'Les exercices sont intégrés dans les leçons et les cours. Ils comprennent :\n\n'
-          '• Des QCM (Questions à Choix Multiples)\n'
-          '• Des exercices de complétion de code\n'
-          '• Des exercices de debug (trouver et corriger les erreurs)\n'
-          '• Des exercices pratiques à réaliser dans le lab\n\n'
-          'Chaque exercice possède des indices et une correction détaillée. '
-          'Les scores sont enregistrés dans votre progression.',
+          'Deux types d\'exercices vous attendent.\n\n'
+          'Dans chaque leçon : un exercice pratique, avec un indice et une correction à déplier.\n\n'
+          'Dans l\'écran Exercices (action rapide de l\'accueil, ou icône en haut de l\'onglet Cours) :\n'
+          '• QCM et choix de la bonne commande\n'
+          '• Compléter une commande\n'
+          '• Corriger une commande erronée\n'
+          '• Prédire le résultat d\'une commande\n'
+          '• Écrire une commande ou un petit script\n\n'
+          'Filtrez par shell et par type, puis touchez « Vérifier ». En cas d\'erreur, la bonne '
+          'réponse et une explication s\'affichent. Les exercices réussis comptent pour vos badges.',
     ),
     _GuideSection(
       title: 'Laboratoire',
@@ -88,13 +98,17 @@ class _GuideScreenState extends State<GuideScreen> {
           'Le Laboratoire (Lab) est un terminal simulé où vous pouvez pratiquer '
           'les commandes Bash et PowerShell en toute sécurité.\n\n'
           'Fonctionnalités :\n'
-          '• Un terminal Bash avec le prompt student@bash-lab:~\$\n'
-          '• Un terminal PowerShell avec le prompt PS C:\\ShellLab>\n'
-          '• Un système de missions guidées avec objectifs\n'
-          '• Un système de fichiers virtuel simulé\n'
-          '• Des indices disponibles pour chaque mission\n\n'
-          'Tapez "help" dans le terminal pour voir les commandes disponibles. '
-          'Les missions vous guident progressivement dans l\'apprentissage des commandes essentielles.',
+          '• Un terminal Bash (prompt student@bash-lab:~\$) et un terminal PowerShell (prompt PS C:\\home\\student>)\n'
+          '• Le prompt affiche le dossier courant, comme dans un vrai terminal\n'
+          '• Un système de fichiers virtuel partagé par les deux terminaux\n'
+          '• 8 missions guidées, avec des exemples de commandes et des indices\n'
+          '• Chemins composés (cd ../docs), options combinées (rm -rf), guillemets et redirections (echo texte > fichier)\n\n'
+          'Les missions sont validées d\'après le résultat obtenu, pas d\'après le texte exact tapé. '
+          'Votre session (fichiers, dossier courant, missions) est sauvegardée et restaurée '
+          'au prochain lancement. Pour repartir de zéro, utilisez « Réinitialiser le lab » dans '
+          'l\'onglet Missions ou dans le Profil.\n\n'
+          'Tapez "help" dans un terminal pour voir les commandes disponibles. '
+          'Comme dans la réalité, Bash distingue les majuscules des minuscules, PowerShell non.',
     ),
     _GuideSection(
       title: 'Comparateur',
@@ -117,7 +131,7 @@ class _GuideScreenState extends State<GuideScreen> {
           'Les Cheat Sheets sont des fiches de référence rapide pour toutes les commandes.\n\n'
           'Chaque fiche affiche :\n'
           '• Le nom de la commande en monospace\n'
-      '• Le shell (Bash ou PowerShell)\n'
+          '• Le shell (Bash ou PowerShell)\n'
           '• La syntaxe dans un conteneur terminal\n'
           '• Une description de la commande\n'
           '• Un exemple d\'utilisation\n'
@@ -145,15 +159,16 @@ class _GuideScreenState extends State<GuideScreen> {
       title: 'Projets',
       icon: Icons.folder_rounded,
       content:
-          'Les Projets sont des guides pas à pas pour réaliser des tâches complètes.\n\n'
+          'Les Projets sont des guides pas à pas pour réaliser des tâches complètes. '
+          'Vous les trouvez avec le bouton « Projets » en haut de l\'onglet Défis, ou dans les actions rapides de l\'accueil.\n\n'
           'Chaque projet contient :\n'
           '• Une description de l\'objectif\n'
           '• Les étapes détaillées à suivre\n'
           '• La solution complète avec le code\n'
           '• Une explication de chaque étape\n'
           '• La difficulté et le shell utilisé\n\n'
-          'Les projets vous permettent de mettre en pratique vos connaissances '
-          'dans des scénarios réalistes.',
+          'Marquez un projet comme terminé pour faire avancer votre progression : '
+          '3 projets terminés débloquent le badge « Administration ».',
     ),
     _GuideSection(
       title: 'Favoris',
@@ -173,9 +188,10 @@ class _GuideScreenState extends State<GuideScreen> {
       content:
           'La section Notes vous permet de créer et gérer des notes personnelles.\n\n'
           'Fonctionnalités :\n'
-          '• Créer une note avec titre et contenu\n'
+          '• Créer une note avec titre et contenu (Profil > Mes Notes)\n'
+          '• Prendre une note depuis une leçon (icône note en haut de la leçon) : '
+          'elle est rattachée à la leçon, dont le nom s\'affiche dans la liste\n'
           '• Éditer et supprimer des notes\n'
-          '• Rechercher dans vos notes\n'
           '• Les notes sont sauvegardées localement\n\n'
           'Utilisez les notes pour consigner vos découvertes, '
           'vos astuces et tout ce que vous apprenez en cours de route.',
@@ -186,7 +202,7 @@ class _GuideScreenState extends State<GuideScreen> {
       content:
           'Votre progression est automatiquement suivie et sauvegardée.\n\n'
           'Éléments suivis :\n'
-          '• Cours terminés (Bash et PowerShell)\n'
+          '• Leçons terminées (pourcentage par shell)\n'
           '• Exercices réussis avec scores\n'
           '• Défis relevés\n'
           '• Projets terminés\n'
@@ -203,7 +219,7 @@ class _GuideScreenState extends State<GuideScreen> {
           '• "Administration" : terminez 3 projets\n'
           '• "Shell Master" : débloquez tous les autres badges\n\n'
           'Touchez un badge dans l\'écran Progression pour voir sa condition.\n\n'
-          'Toutes les données sont sauvegardées localement via SharedPreferences.',
+          'Toutes les données sont sauvegardées localement sur votre appareil.',
     ),
     _GuideSection(
       title: 'Paramètres',
@@ -212,13 +228,12 @@ class _GuideScreenState extends State<GuideScreen> {
           'Accédez aux paramètres depuis l\'onglet Profil.\n\n'
           'Options disponibles :\n'
           '• Thème : Clair / Système / Sombre\n'
-          '• Taille du texte : adapter la taille de police\n'
-          '• Taille du code : adapter la taille du code dans les terminaux\n'
-          '• Réinitialiser la progression\n'
-          '• Réinitialiser les notes\n'
-          '• Réinitialiser les favoris\n'
-          '• Guide de démarrage\n\n'
-          'Vous pouvez also revoir ce guide à tout moment depuis les paramètres.',
+          '• Taille du texte : adapter la taille de police de l\'application\n'
+          '• Taille du code : adapter la taille des blocs de code des leçons et du terminal du Lab\n'
+          '• Réinitialiser la progression (leçons, exercices, défis, projets et badges)\n'
+          '• Réinitialiser le Lab (missions et fichiers du terminal simulé)\n\n'
+          'Ce guide s\'ouvre automatiquement au premier lancement. Vous pouvez le revoir à '
+          'tout moment depuis le Profil ou les actions rapides de l\'accueil.',
     ),
   ];
 
@@ -232,13 +247,13 @@ class _GuideScreenState extends State<GuideScreen> {
     _TourStep(
       number: 2,
       title: 'Commencez le cours "Découverte de Bash"',
-      description: 'Allez dans l\'onglet Cours, sélectionnez Bash et lancez le premier cours.',
+      description: 'Dans l\'onglet Cours, touchez « Découverte de Bash » puis « Commencer le cours ».',
       icon: Icons.menu_book_rounded,
     ),
     _TourStep(
       number: 3,
       title: 'Essayez votre première commande dans le Lab',
-      description: 'Ouvrez le Lab, tapez "ls" ou "pwd" pour voir le système de fichiers virtuel.',
+      description: 'Ouvrez le Lab, tapez "help", puis suivez la première mission : mkdir projects.',
       icon: Icons.science_rounded,
     ),
     _TourStep(
@@ -274,13 +289,13 @@ class _GuideScreenState extends State<GuideScreen> {
     _TourStep(
       number: 9,
       title: 'Consultez votre progression',
-      description: 'Retournez à l\'accueil pour voir vos statistiques mis à jour.',
+      description: 'Retournez à l\'accueil pour voir vos statistiques mises à jour.',
       icon: Icons.trending_up_rounded,
     ),
     _TourStep(
       number: 10,
       title: 'Explorez les paramètres',
-      description: 'Personnalisez le thème et la taille du texte depuis l\'onglet Profil.',
+      description: 'Personnalisez le thème, la taille du texte et celle du code depuis l\'onglet Profil.',
       icon: Icons.settings_rounded,
     ),
   ];
