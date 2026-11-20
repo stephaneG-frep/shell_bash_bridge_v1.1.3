@@ -5,7 +5,7 @@ import '../../data/bash_courses.dart';
 import '../../data/powershell_courses.dart';
 import '../../models/course.dart';
 import '../../services/progress_service.dart';
-import '../lessons/lesson_detail_screen.dart';
+import 'course_detail_screen.dart';
 import '../exercises/exercises_screen.dart';
 
 class CoursesScreen extends StatefulWidget {
@@ -176,9 +176,7 @@ class _CoursesScreenState extends State<CoursesScreen>
           if (course.lessons.isNotEmpty) {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => LessonDetailScreen(lesson: course.lessons.first),
-              ),
+              MaterialPageRoute(builder: (_) => CourseDetailScreen(course: course)),
             );
           }
         },
@@ -213,10 +211,13 @@ class _CoursesScreenState extends State<CoursesScreen>
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      '${course.lessons.length} leçons',
-                      style: TextStyle(color: color, fontSize: 11),
-                    ),
+                    Builder(builder: (context) {
+                      final done = course.lessons.where((l) => ProgressService.isLessonComplete(l.id)).length;
+                      return Text(
+                        done == 0 ? '${course.lessons.length} leçons' : '$done/${course.lessons.length} leçons terminées',
+                        style: TextStyle(color: color, fontSize: 11, fontWeight: done == course.lessons.length ? FontWeight.w700 : FontWeight.normal),
+                      );
+                    }),
                   ],
                 ),
               ),

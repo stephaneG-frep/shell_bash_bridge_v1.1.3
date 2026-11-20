@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/theme.dart';
+import '../../data/bash_courses.dart';
+import '../../data/powershell_courses.dart';
+import '../../models/course.dart';
 import '../../models/lesson.dart';
 import '../../services/progress_service.dart';
 import '../../shared/widgets/terminal_container.dart';
@@ -8,7 +11,17 @@ import '../notes/notes_screen.dart';
 
 class LessonDetailScreen extends StatefulWidget {
   final Lesson lesson;
-  const LessonDetailScreen({super.key, required this.lesson});
+
+  /// Cours de la leçon (retrouvé automatiquement s'il n'est pas fourni).
+  final Course? course;
+  const LessonDetailScreen({super.key, required this.lesson, this.course});
+
+  static Course? courseOf(Lesson lesson) {
+    for (final c in [...BashCourseData.allCourses, ...PowerShellCourseData.allCourses]) {
+      if (c.lessons.any((l) => l.id == lesson.id)) return c;
+    }
+    return null;
+  }
 
   @override
   State<LessonDetailScreen> createState() => _LessonDetailScreenState();
@@ -17,10 +30,31 @@ class LessonDetailScreen extends StatefulWidget {
 class _LessonDetailScreenState extends State<LessonDetailScreen> {
   bool _isCompleted = false;
   bool _isFavorite = false;
+  Course? _course;
+  int _index = -1;
+
+  Lesson? get _previous => (_course != null && _index > 0) ? _course!.lessons[_index - 1] : null;
+  Lesson? get _next =>
+      (_course != null && _index >= 0 && _index < _course!.lessons.length - 1) ? _course!.lessons[_index + 1] : null;
+
+  void _goTo(Lesson lesson) {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (_) => LessonDetailScreen(lesson: lesson, course: _course),
+    ));
+  }
+
+  Future<void> _complete() async {
+    await ProgressService.completeLesson(widget.lesson.id);
+    if (!mounted) return;
+    setState(() => _isCompleted = true);
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Leçon terminée !')));
+  }
 
   @override
   void initState() {
     super.initState();
+    _course = widget.course ?? LessonDetailScreen.courseOf(widget.lesson);
+    _index = _course?.lessons.indexWhere((l) => l.id == widget.lesson.id) ?? -1;
     _isCompleted = ProgressService.isLessonComplete(widget.lesson.id);
     _isFavorite = ProgressService.isFavorite(widget.lesson.id);
   }
@@ -36,7 +70,16 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(lesson.title),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(lesson.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+            if (_course != null && _index >= 0)
+              Text('Leçon ${_index + 1}/${_course!.lessons.length} · ${_course!.title}',
+                  style: TextStyle(fontSize: 11, color: AppTheme.textSecColor(context)),
+                  maxLines: 1, overflow: TextOverflow.ellipsis),
+          ],
+        ),
         actions: [
           ShellBadge(shell: lesson.shell),
           const SizedBox(width: 8),
@@ -106,16 +149,47 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _isCompleted ? null : () async {
-                  await ProgressService.completeLesson(lesson.id);
-                  setState(() => _isCompleted = true);
-                  if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Leçon terminée !')));
-                },
-                icon: Icon(_isCompleted ? Icons.check_circle : Icons.check_circle_outline),
-                label: Text(_isCompleted ? 'Terminé' : 'Marquer comme terminé'),
-              ),
+              child: _isCompleted || _next == null
+                  ? ElevatedButton.icon(
+                      onPressed: _isCompleted ? null : _complete,
+                      icon: Icon(_isCompleted ? Icons.check_circle : Icons.check_circle_outline),
+                      label: Text(_isCompleted ? 'Terminé' : 'Marquer comme terminé'),
+                    )
+                  : FilledButton.icon(
+                      // Termine la leçon et enchaîne directement sur la suivante.
+                      onPressed: () async {
+                        await _complete();
+                        if (mounted) _goTo(_next!);
+                      },
+                      icon: const Icon(Icons.check_circle_outline),
+                      label: const Text('Terminer et continuer'),
+                    ),
             ),
+            if (_previous != null || _next != null) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  if (_previous != null)
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => _goTo(_previous!),
+                        icon: const Icon(Icons.chevron_left_rounded),
+                        label: const Text('Précédente'),
+                      ),
+                    ),
+                  if (_previous != null && _next != null) const SizedBox(width: 12),
+                  if (_next != null)
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => _goTo(_next!),
+                        icon: const Icon(Icons.chevron_right_rounded),
+                        label: const Text('Suivante'),
+                        iconAlignment: IconAlignment.end,
+                      ),
+                    ),
+                ],
+              ),
+            ],
             const SizedBox(height: 32),
           ],
         ),
